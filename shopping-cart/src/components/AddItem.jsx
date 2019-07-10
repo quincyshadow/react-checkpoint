@@ -3,9 +3,11 @@ import React from "react";
 class AddItem extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = { product: 40, quantity: 0, products: this.props.products
-		 };
-		
+		this.state = {
+			product: 40,
+			quantity: 0,
+			products: this.props.products
+		};
 
 		this.handleInputChange = this.handleInputChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -22,19 +24,23 @@ class AddItem extends React.Component {
 	handleSubmit(event) {
 		//alert("Your favorite flavor is: " + this.state.product);
 		event.preventDefault();
-		let index = this.state.products.findIndex(el => {
-			return parseInt(el.id) === parseInt(this.state.product)
-		})
-		let cartItem = 
-		  {product: {
-		    id: this.state.product,
-		    name: this.state.products[index].name,
-		    priceInCents: this.state.products[index].priceInCents
-		  },
-		  quantity: this.state.quantity
-		};
-		this.props.addToCart(cartItem);
-		// alert("ID: " + this.state.product + "index: " +index);
+		if (this.state.quantity < 1) {
+			alert("Quantity must be greater than 1");
+		} else {
+			let index = this.state.products.findIndex(el => {
+				return parseInt(el.id) === parseInt(this.state.product);
+			});
+			let cartItem = {
+				product: {
+					id: this.state.product,
+					name: this.state.products[index].name,
+					priceInCents: this.state.products[index].priceInCents
+				},
+				quantity: this.state.quantity
+			};
+			this.props.addToCart(cartItem);
+			// alert("ID: " + this.state.product + "index: " +index);
+		}
 	}
 
 	render() {
@@ -50,10 +56,8 @@ class AddItem extends React.Component {
 							name="quantity"
 							id="quantity"
 							className="form-control"
-
 							onChange={this.handleInputChange}
-						>
-						</input>
+						></input>
 					</div>
 					<div className="form-group">
 						<label for="product">Product</label>
@@ -67,7 +71,7 @@ class AddItem extends React.Component {
 							{this.props.products.map(el => {
 								return (
 									<option value={el.id}>
-										{el.name} {el.priceInCents}
+										{el.name} {(el.priceInCents/100).toLocaleString("en-US", {style:"currency", currency:"USD"})}
 									</option>
 								);
 							})}
